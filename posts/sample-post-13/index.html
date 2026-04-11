@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=/posts/10/"><title>正在跳转…</title><meta name="robots" content="index,follow"><link rel="canonical" href="https://ldoboke.github.io/posts/sample-post-13/"><script>location.replace("/posts/10/");</script></head><body><div class="page-watermark" aria-hidden="true"></div>正在跳转…
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=/posts/10/"><title>正在跳转…</title>
+
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+<meta name="robots" content="index,follow"><link rel="canonical" href="https://ldoboke.github.io/posts/sample-post-13/"><script>location.replace("/posts/10/");</script></head><body>正在跳转…
 <script>
 (function(){
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
@@ -22,74 +25,95 @@
 
 
 
-
-
-
 <script>
 (function(){
   function setText(id, value){
     var el = document.getElementById(id);
-    if (el) el.textContent = value;
+    if(el) el.textContent = value;
   }
 
-  function getGoatPath(){
-    try{
-      if (window.goatcounter && window.goatcounter.get_data) {
-        return window.goatcounter.get_data()['p'];
-      }
-    }catch(e){}
-    return location.pathname || "/";
+  function normalizedPath(){
+    var path = location.pathname || "/";
+    if(path.endsWith("index.html")) path = path.slice(0, -"index.html".length);
+    if(!path.endsWith("/")) path += "/";
+    return path || "/";
   }
 
   function counterUrl(path){
-    return "https://ldoboke.goatcounter.com/counter/" + encodeURIComponent(path) + ".json";
+    return "https://ldoboke.goatcounter.com/counter/" + encodeURI(path) + ".json";
   }
 
   async function fetchCount(path){
     try{
-      var res = await fetch(counterUrl(path), {mode:"cors", cache:"no-store"});
-      if (!res.ok) throw new Error("bad response");
+      var res = await fetch(counterUrl(path), { mode: "cors", cache: "no-store" });
+      if(!res.ok) throw new Error("bad response");
       var data = await res.json();
-      if (typeof data.count === "string") return data.count;
-      if (typeof data.count === "number") return String(data.count);
-      return "0";
+      return typeof data.count === "number" ? data.count : 0;
     }catch(e){
-      return "—";
+      return null;
     }
   }
 
-  function waitForGoatCounter(){
-    return new Promise(function(resolve){
-      var tries = 0;
-      var timer = setInterval(function(){
-        tries += 1;
-        if (window.goatcounter && window.goatcounter.get_data) {
-          clearInterval(timer);
-          resolve();
-        } else if (tries > 50) {
-          clearInterval(timer);
-          resolve();
-        }
-      }, 120);
-    });
-  }
-
   async function applyGoatCounterStats(){
-    await waitForGoatCounter();
+    var path = normalizedPath();
 
     var total = await fetchCount("TOTAL");
-    setText("gc-total", total);
+    setText("gc-total", total === null ? "—" : total);
 
-    var currentPath = getGoatPath();
-    var current = await fetchCount(currentPath);
-    setText("gc-path", current);
-    setText("gc-article", current);
+    var current = await fetchCount(path);
+    setText("gc-path", current === null ? "—" : current);
+    setText("gc-article", current === null ? "—" : current);
 
+    // GoatCounter 页面嵌入计数器没有直接提供“今日访问”的稳定字段，这里不再做本地假统计。
     setText("gc-today", "后台查看");
   }
 
   window.addEventListener("DOMContentLoaded", applyGoatCounterStats);
 })();
 </script>
+
+
+<section class="comment-section">
+  <h2 class="comment-section-title">评论</h2>
+  <p class="comment-section-note">无需登录 • 即可畅所欲言</p>
+  <section class="waline-card">
+    <div id="waline"></div>
+  </section>
+</section>
+
+
+<script type="module">
+import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+init({
+  el: '#waline',
+  serverURL: 'https://waline-ldoboke.vercel.app',
+  path: window.location.pathname,
+  lang: 'zh-CN',
+  meta: ['nick', 'mail', 'link'],
+  requiredMeta: ['nick'],
+  metaPlaceholder: {
+    nick: '昵称',
+    mail: '邮箱(可选)',
+    link: '网址(可选)'
+  },
+  placeholder: '欢迎评论',
+  avatar: 'mp',
+  pageview: true,
+  comment: true,
+  search: false,
+  emoji: [
+    'https://unpkg.com/@waline/emojis@1.2.0/weibo',
+  ],
+});
+</script>
+
+
+
+
+
+
+
+
+
 
 </body></html>
