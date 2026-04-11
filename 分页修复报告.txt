@@ -1,7 +1,0 @@
-page/2/index.html: <a class="label" href="../../index.html">上一页</a><a href="../../index.html">1</a><span class="current">2</span>
-
-archives/page/2/index.html: <a class="label" href="../../index.html">上一页</a><a href="../../index.html">1</a><span class="current">2</span>
-
-categories/essay/page/2/index.html: <a class="label" href="../../../index.html">上一页</a><a href="../../../index.html">1</a><span class="current">2</span>
-
-tags/hexo/page/2/index.html: <a class="label" href="../../../index.html">上一页</a><a href="../../../index.html">1</a><span class="current">2</span>
