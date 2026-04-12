@@ -537,28 +537,37 @@ const modal=document.getElementById('search-modal');
 (function(){
   function setText(id, value){
     var el = document.getElementById(id);
-    if(el) el.textContent = value;
+    if (el) el.textContent = value;
   }
 
   function normalizedPath(){
     var path = location.pathname || "/";
-    if(path.endsWith("index.html")) path = path.slice(0, -"index.html".length);
-    if(!path.endsWith("/")) path += "/";
+    if (path.endsWith("index.html")) path = path.slice(0, -"index.html".length);
+    if (!path.endsWith("/")) path += "/";
     return path || "/";
   }
 
   function counterUrl(path){
-    return "https://ldoboke.goatcounter.com/counter/" + encodeURI(path) + ".json";
+    return "https://ldoboke.goatcounter.com/counter/" + encodeURIComponent(path) + ".json";
   }
 
   async function fetchCount(path){
     try{
-      var res = await fetch(counterUrl(path), { mode: "cors", cache: "no-store" });
-      if(!res.ok) throw new Error("bad response");
+      var res = await fetch(counterUrl(path), {
+        mode: "cors",
+        cache: "no-store"
+      });
+
+      if (!res.ok) throw new Error("bad response");
+
       var data = await res.json();
-      return typeof data.count === "number" ? data.count : 0;
+
+      if (typeof data.count === "string") return data.count;
+      if (typeof data.count === "number") return String(data.count);
+
+      return "0";
     }catch(e){
-      return null;
+      return "—";
     }
   }
 
@@ -566,13 +575,12 @@ const modal=document.getElementById('search-modal');
     var path = normalizedPath();
 
     var total = await fetchCount("TOTAL");
-    setText("gc-total", total === null ? "—" : total);
+    setText("gc-total", total);
 
     var current = await fetchCount(path);
-    setText("gc-path", current === null ? "—" : current);
-    setText("gc-article", current === null ? "—" : current);
+    setText("gc-path", current);
+    setText("gc-article", current);
 
-    // GoatCounter 页面嵌入计数器没有直接提供“今日访问”的稳定字段，这里不再做本地假统计。
     setText("gc-today", "后台查看");
   }
 
