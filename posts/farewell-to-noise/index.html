@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=/posts/3/"><title>正在跳转…</title>
 
-<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+
 <meta name="robots" content="index,follow"><link rel="canonical" href="https://ldoboke.github.io/posts/farewell-to-noise/"><script>location.replace("/posts/3/");</script></head><body>正在跳转…
 <script>
 (function(){
@@ -85,33 +85,20 @@
   <h2 class="comment-section-title">评论</h2>
   <p class="comment-section-note">无需登录 • 即可畅所欲言</p>
   <section class="waline-card">
-    <div id="waline"></div>
+    <div id="tcomment"></div>
   </section>
 </section>
 
 
-<script type="module">
-import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-init({
-  el: '#waline',
-  serverURL: 'https://waline-ldoboke.vercel.app',
-  path: window.location.pathname,
-  lang: 'zh-CN',
-  meta: ['nick', 'mail', 'link'],
-  requiredMeta: ['nick'],
-  metaPlaceholder: {
-    nick: '昵称',
-    mail: '邮箱(可选)',
-    link: '网址(可选)'
-  },
-  placeholder: '欢迎评论',
-  avatar: 'mp',
-  pageview: true,
-  comment: true,
-  search: false,
-  emoji: [
-    'https://unpkg.com/@waline/emojis@1.2.0/weibo',
-  ],
+<script src="https://cdn.jsdelivr.net/npm/twikoo@1.7.7/dist/twikoo.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  twikoo.init({
+    envId: 'https://twikoo-ldoboke.vercel.app',
+    el: '#tcomment',
+    path: window.location.pathname,
+    lang: 'zh-CN'
+  });
 });
 </script>
 
