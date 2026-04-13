@@ -76,5 +76,35 @@
 })();
 </script>
 
+
+<script>
+(function () {
+  try {
+    document.oncontextmenu = null;
+    window.oncontextmenu = null;
+    document.onkeydown = null;
+    window.onkeydown = null;
+  } catch (e) {}
+
+  function unblock(evt) {
+    evt.stopImmediatePropagation();
+  }
+
+  window.addEventListener('contextmenu', unblock, true);
+  document.addEventListener('contextmenu', unblock, true);
+  window.addEventListener('keydown', unblock, true);
+  document.addEventListener('keydown', unblock, true);
+
+  window.addEventListener('load', function () {
+    try {
+      document.oncontextmenu = null;
+      window.oncontextmenu = null;
+      document.onkeydown = null;
+      window.onkeydown = null;
+    } catch (e) {}
+  });
+})();
+</script>
+
 </body>
 </html>

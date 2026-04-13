@@ -1166,8 +1166,7 @@ const modal=document.getElementById('search-modal');
  if(openBtn) openBtn.addEventListener('click', openModal);
  if(closeBtn) closeBtn.addEventListener('click', closeModal);
  if(modal) modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
- document.addEventListener('keydown', e=>{
-   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); openModal(); }
+ openModal(); }
    if(e.key==='Escape') closeModal();
  });
  if(input){
@@ -1198,10 +1197,8 @@ const modal=document.getElementById('search-modal');
 </script>
 <script>
 (function(){
-  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){
-    const k = (e.key || '').toLowerCase();
-    if (
+  });
+  if (
       e.key === 'F12' ||
       (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(k)) ||
       (e.ctrlKey && ['u','s'].includes(k))
@@ -1313,4 +1310,34 @@ const modal=document.getElementById('search-modal');
   }
 })();
 </script>
+
+<script>
+(function () {
+  try {
+    document.oncontextmenu = null;
+    window.oncontextmenu = null;
+    document.onkeydown = null;
+    window.onkeydown = null;
+  } catch (e) {}
+
+  function unblock(evt) {
+    evt.stopImmediatePropagation();
+  }
+
+  window.addEventListener('contextmenu', unblock, true);
+  document.addEventListener('contextmenu', unblock, true);
+  window.addEventListener('keydown', unblock, true);
+  document.addEventListener('keydown', unblock, true);
+
+  window.addEventListener('load', function () {
+    try {
+      document.oncontextmenu = null;
+      window.oncontextmenu = null;
+      document.onkeydown = null;
+      window.onkeydown = null;
+    } catch (e) {}
+  });
+})();
+</script>
+
 </body></html>

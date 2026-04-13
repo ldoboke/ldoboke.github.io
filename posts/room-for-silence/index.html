@@ -4,10 +4,8 @@
 <meta name="robots" content="index,follow"><link rel="canonical" href="https://ldoboke.github.io/posts/room-for-silence/"><script>location.replace("/posts/4/");</script></head><body>正在跳转…
 <script>
 (function(){
-  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){
-    const k = (e.key || '').toLowerCase();
-    if (
+  });
+  if (
       e.key === 'F12' ||
       (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(k)) ||
       (e.ctrlKey && ['u','s'].includes(k))
@@ -128,4 +126,34 @@
   }
 })();
 </script>
+
+<script>
+(function () {
+  try {
+    document.oncontextmenu = null;
+    window.oncontextmenu = null;
+    document.onkeydown = null;
+    window.onkeydown = null;
+  } catch (e) {}
+
+  function unblock(evt) {
+    evt.stopImmediatePropagation();
+  }
+
+  window.addEventListener('contextmenu', unblock, true);
+  document.addEventListener('contextmenu', unblock, true);
+  window.addEventListener('keydown', unblock, true);
+  document.addEventListener('keydown', unblock, true);
+
+  window.addEventListener('load', function () {
+    try {
+      document.oncontextmenu = null;
+      window.oncontextmenu = null;
+      document.onkeydown = null;
+      window.onkeydown = null;
+    } catch (e) {}
+  });
+})();
+</script>
+
 </body></html>
