@@ -1,4 +1,3 @@
-
 (function () {
   const modal = document.getElementById('search-modal');
   const openBtn = document.getElementById('open-search');
@@ -22,8 +21,11 @@
 
   if (openBtn) openBtn.addEventListener('click', openModal);
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
-  if (modal) modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
-  openModal(); }
+  if (modal) modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeModal();
   });
 
@@ -47,7 +49,10 @@
         return;
       }
       const matched = data.filter(item => {
-        return [item.title, item.excerpt, item.content, (item.tags || []).join(' ')].join(' ').toLowerCase().includes(q);
+        return [item.title, item.excerpt, item.content, (item.tags || []).join(' ')]
+          .join(' ')
+          .toLowerCase()
+          .includes(q);
       }).slice(0, 10);
       if (!matched.length) {
         results.innerHTML = '<p class="search-empty">没有找到相关内容。</p>';
