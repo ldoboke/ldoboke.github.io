@@ -121,6 +121,24 @@
     });
   }
 
+
+  function formatBeijingTime() {
+    const now = new Date();
+    const parts = new Intl.DateTimeFormat('zh-CN', {
+      timeZone: 'Asia/Shanghai',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).formatToParts(now);
+    let hh = '00';
+    let mm = '00';
+    parts.forEach(function (p) {
+      if (p.type === 'hour') hh = p.value;
+      if (p.type === 'minute') mm = p.value;
+    });
+    return hh + ':' + mm;
+  }
+
   function setText(id, value) {
     const el = document.getElementById(id);
     if (el) el.textContent = value;
@@ -151,8 +169,10 @@
   }
 
   async function applyGoatCounterStats() {
+    setText('gc-today', formatBeijingTime());
+    setInterval(function(){ setText('gc-today', formatBeijingTime()); }, 60000);
     const path = normalizedPath();
-    setText('gc-today', '后台查看');
+    
     const total = await fetchCount('TOTAL');
     setText('gc-total', total);
     const current = await fetchCount(path);
@@ -161,9 +181,52 @@
     setText('gc-article-legacy', current);
   }
 
+
+  function setupBackTop() {
+    let btn = document.getElementById('back-top');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'back-top';
+      btn.className = 'back-top';
+      btn.setAttribute('aria-label', '返回顶部');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg>';
+      document.body.appendChild(btn);
+    }
+    function update() {
+      const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      btn.classList.toggle('show', y > 320);
+    }
+    btn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  function setupReveal() {
+    const cards = document.querySelectorAll('.post-card, .article-page, .page-card, .archive-card, .category-card, .tag-card, .message-preview-card, .site-footer');
+    cards.forEach(function (el, index) {
+      if (el.classList.contains('site-header')) return;
+      el.classList.add('reveal-on-scroll');
+      el.style.transitionDelay = Math.min(index * 40, 160) + 'ms';
+    });
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    cards.forEach(function (el){ io.observe(el); });
+  }
+
+
   applyTheme(preferredTheme());
   bindTheme();
   bindSearch();
+  setupBackTop();
+  setupReveal();
   bindGiscusThemeSync();
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', applyGoatCounterStats);
